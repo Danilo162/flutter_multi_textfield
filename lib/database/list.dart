@@ -1,40 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_textfield/add_screen.dart';
 import 'package:flutter_multi_textfield/database/database_hepler.dart';
-import 'package:flutter_multi_textfield/database/list.dart';
 import 'package:flutter_multi_textfield/database/model/Contact.dart';
+import 'package:flutter_multi_textfield/home_presenter.dart';
 
-void main() => runApp(MyApp());
-abstract class HomeContract {
-  void screenUpdate();
-}
-class MyApp extends StatelessWidget {
-  HomeContract _view;
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int count = 0;
+class ContactList extends StatelessWidget {
   List<Contact> contact;
-  var db = new DatabaseHelper();
+  HomePresenter homePresenter;
+//  ContactList(List<Contact> this.contact,
+//    HomePresenter this.homePresenter, {
+//    Key key,
+//  }) : super(key: key);
+  //contact = await getUser();
+  Future<List<Contact>> getContact() {
+    return db.getContact();
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -107,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       icon: const Icon(Icons.delete_forever,
                                           color: const Color(0xFF167F67)),
                                       onPressed: () =>
-                                          delete(contact),
+                                          homePresenter.delete(contact),
                                     ),
                                   ],
                                 ),
@@ -126,17 +105,26 @@ class _MyHomePageState extends State<MyHomePage> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () async {
-            Navigator.push(
-              context,
-              //  MaterialPageRoute(builder: (context) => ContactList(contact,data)),
-              MaterialPageRoute(builder: (context) => AddScreen()),
-            );
+
           },
         ),
       ),
     );
 
   }
+
+  displayRecord() {
+    homePresenter.updateScreen();
+  }
+//  edit(Contact Contact, BuildContext context) {
+//    showDialog(
+//      context: context,
+//      builder: (BuildContext context) =>
+//          new AddContactDialog().buildAboutDialog(context, this, true, Contact),
+//    );
+//    homePresenter.updateScreen();
+//  }
+
   String getShortName(Contact Contact) {
     String shortName = "";
     if (!Contact.adresse.isEmpty) {
@@ -147,14 +135,5 @@ class _MyHomePageState extends State<MyHomePage> {
       shortName = shortName + Contact.date.substring(0, 1);
     }
     return shortName;
-  }
-  delete(Contact contact) {
-    var db = new DatabaseHelper();
-    db.deleteContact(contact);
-    updateScreen();
-  }
-  updateScreen() {
-
-
   }
 }
