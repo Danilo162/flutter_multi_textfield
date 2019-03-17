@@ -31,15 +31,9 @@ class _MyHomePageState extends State<myAddScreen> {
   int count = 0;
   List<String> litems = [];
   var textEditingControllers = <TextEditingController>[];
-
   final myController = TextEditingController();
-  List<String> tempList = [];
-  String sth1 ;
-  String sth2 ;
   Contact contact;
   var data = "";
-  List <String> list =  new List();
-
   @override  initState() {
   }
   @override
@@ -51,7 +45,7 @@ class _MyHomePageState extends State<myAddScreen> {
       ),
 
       body: Center(
-        child:Column(children: createTexttextfields(),)
+        child: SingleChildScrollView(child:Column(children: createTexttextfields(),) ,)
       ),
     floatingActionButton: FloatingActionButton(
     onPressed: () {
@@ -64,6 +58,8 @@ class _MyHomePageState extends State<myAddScreen> {
     );
   }
   List<Widget> createTexttextfields (){
+    List <String> list =  new List();
+
     list.add("AYEKPA ABLE DANIEL");
     list.add("fff@gmail.com");
     list.add("ddddd@gmail.com");
@@ -148,7 +144,7 @@ class _MyHomePageState extends State<myAddScreen> {
   }
   @override
   void dispose() {
-    list.clear();
+   // list.clear();
     super.dispose();
   }
 
