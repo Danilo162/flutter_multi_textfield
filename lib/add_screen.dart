@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multi_textfield/database/database_hepler.dart';
 import 'package:flutter_multi_textfield/database/list.dart';
 import 'package:flutter_multi_textfield/database/model/Contact.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class AddScreen extends StatelessWidget {
@@ -30,13 +31,17 @@ class _MyHomePageState extends State<myAddScreen> {
   int count = 0;
   List<String> litems = [];
   var textEditingControllers = <TextEditingController>[];
-  var textFields = <Container>[];
+
   final myController = TextEditingController();
   List<String> tempList = [];
   String sth1 ;
   String sth2 ;
   Contact contact;
   var data = "";
+  List <String> list =  new List();
+
+  @override  initState() {
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,13 +64,12 @@ class _MyHomePageState extends State<myAddScreen> {
     );
   }
   List<Widget> createTexttextfields (){
-    List <String> list =  new List();
-     list.add("AYEKPA ABLE DANIEL");
-     list.add("fff@gmail.com");
-     list.add("ddddd@gmail.com");
-     list.add("MANC KOUL");
+    list.add("AYEKPA ABLE DANIEL");
+    list.add("fff@gmail.com");
+    list.add("ddddd@gmail.com");
+    list.add("MANC KOUL");
     print(list);
-
+    var textFields = <Container>[];
     list.forEach((i) {
       var textEditingController = new TextEditingController(text: "$i");
       textEditingControllers.add(textEditingController);
@@ -74,9 +78,17 @@ class _MyHomePageState extends State<myAddScreen> {
               child: ListTile(
                 leading: const Icon(Icons.phone),
                 title:new TextField(controller: textEditingController,
+                  onEditingComplete: (){
+                    toaster("hgcgkjjjjjjjjjjjjjjjjjjj");
+                    setState(() {
+                      toaster(textEditingController.text);
+                      print("--------------NEWVALUE-------------"+textEditingController.text);
+                    });
+
+                  },
                 ),
-              ),)
-      );
+              )
+      ));
     });
     return textFields;
   }
@@ -134,4 +146,22 @@ class _MyHomePageState extends State<myAddScreen> {
       ),
     ];
   }
+  @override
+  void dispose() {
+    list.clear();
+    super.dispose();
+  }
+
+  toaster(String text)  {
+    Fluttertoast.showToast(
+        msg:text,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.blue,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+  }
+
 }
