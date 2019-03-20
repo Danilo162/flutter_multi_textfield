@@ -90,8 +90,7 @@ class DatabaseHelper {
   // delete contact
   Future<int> deleteContact(Contact contact) async {
     var dbClient = await db;
-    int res =
-        await dbClient.rawDelete('DELETE FROM Contact WHERE id = ?', [contact.id]);
+    int res = await dbClient.rawDelete('DELETE FROM Contact WHERE id = ?', [contact.id]);
     return res;
   }
 
@@ -108,6 +107,9 @@ class DatabaseHelper {
   // Delete contact
   Future<bool> updateContact(Contact contact) async {
     var dbClient = await db;
+    print("+++ id +++");
+    print(contact.id);
+    print("+++ id +++");
     int res =   await dbClient.update("Contact", contact.toMap(),
         where: "id = ?", whereArgs: <int>[contact.id]);
     return res > 0 ? true : false;

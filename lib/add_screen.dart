@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_textfield/bottom_button.dart';
 import 'package:flutter_multi_textfield/database/database_hepler.dart';
 import 'package:flutter_multi_textfield/database/list.dart';
 import 'package:flutter_multi_textfield/database/model/Contact.dart';
@@ -29,12 +30,28 @@ class myAddScreen extends StatefulWidget {
 
 class _MyHomePageState extends State<myAddScreen> {
   int count = 0;
-  List<String> litems = [];
+  List<String> list = [ "PHP", "JAVA",  "FLUTTER","JAVASCRIPT"];
   var textEditingControllers = <TextEditingController>[];
   final myController = TextEditingController();
   Contact contact;
   var data = "";
+  String _lastSelected = 'TAB: 0';
   @override  initState() {
+    list.forEach((value) {
+      textEditingControllers.add(TextEditingController(text: "$value"));
+    });
+    super.initState();
+  }
+  void _selectedTab(int index) {
+    setState(() {
+      _lastSelected = 'TAB: $index';
+    });
+  }
+
+  void _selectedFab(int index) {
+    setState(() {
+      _lastSelected = 'FAB: $index';
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -43,7 +60,6 @@ class _MyHomePageState extends State<myAddScreen> {
         title: Text(widget.title),
         actions: _buildActions(),
       ),
-
       body: Center(
         child: SingleChildScrollView(child:Column(children: createTexttextfields(),) ,)
       ),
@@ -54,31 +70,38 @@ class _MyHomePageState extends State<myAddScreen> {
   //  print(getAllValue());
     },
       tooltip: 'Get all data',
-      child: Icon(Icons.add),), // This trailing comma makes auto-formatting nicer for build methods.
+      child: Icon(Icons.save),
+    backgroundColor: Colors.green,),
+        bottomNavigationBar: FABBottomAppBar(
+          centerItemText: 'A',
+          color: Colors.grey,
+          selectedColor: Colors.red,
+          notchedShape: CircularNotchedRectangle(),
+          onTabSelected: _selectedTab,
+          items: [
+            FABBottomAppBarItem(iconData: Icons.menu, text: 'Accueil'),
+            FABBottomAppBarItem(iconData: Icons.layers, text: 'Add Dinamic field'),
+            FABBottomAppBarItem(iconData: Icons.dashboard, text: 'Bottom'),
+            FABBottomAppBarItem(iconData: Icons.info, text: 'Bar'),
+          ],
+        ),// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
   List<Widget> createTexttextfields (){
-    List <String> list =  new List();
 
-    list.add("AYEKPA ABLE DANIEL");
-    list.add("fff@gmail.com");
-    list.add("ddddd@gmail.com");
-    list.add("MANC KOUL");
     print(list);
     var textFields = <Container>[];
-    list.forEach((i) {
-      var textEditingController = new TextEditingController(text: "$i");
-      textEditingControllers.add(textEditingController);
+    textEditingControllers.forEach((controller) {
       return textFields.add( new Container(
               color: Colors.white,
               child: ListTile(
                 leading: const Icon(Icons.phone),
-                title:new TextField(controller: textEditingController,
+                title:new TextField(controller: controller,
                   onEditingComplete: (){
-                    toaster("hgcgkjjjjjjjjjjjjjjjjjjj");
+                  //  toaster("hgcgkjjjjjjjjjjjjjjjjjjj");
                     setState(() {
-                      toaster(textEditingController.text);
-                      print("--------------NEWVALUE-------------"+textEditingController.text);
+                     // toaster(textEditingController.text);
+                    //  print("--------------NEWVALUE-------------"+textEditingController.text);
                     });
 
                   },
@@ -144,10 +167,11 @@ class _MyHomePageState extends State<myAddScreen> {
   }
   @override
   void dispose() {
-   // list.clear();
+    textEditingControllers.forEach((controller) {
+      controller.dispose();
+    });
     super.dispose();
   }
-
   toaster(String text)  {
     Fluttertoast.showToast(
         msg:text,

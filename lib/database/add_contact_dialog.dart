@@ -1,14 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_database/database/database_hepler.dart';
-import 'package:flutter_database/database/model/user.dart';
+import 'package:flutter_multi_textfield/database/database_hepler.dart';
+import 'package:flutter_multi_textfield/database/model/Contact.dart';
+import 'package:flutter_multi_textfield/database/model/user.dart';
+import 'package:flutter_multi_textfield/main.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-class AddUserDialog {
-  final teFirstName = TextEditingController();
-  final teLastFirstName = TextEditingController();
-  final teDOB = TextEditingController();
-  User user;
+class AddContactDialog {
+  final teAdresse = TextEditingController();
+  final teDate = TextEditingController();
+  final teEtat = TextEditingController();
+  Contact contact;
 
   static const TextStyle linkStyle = const TextStyle(
     color: Colors.blue,
@@ -16,34 +19,34 @@ class AddUserDialog {
   );
 
   Widget buildAboutDialog(
-      BuildContext context, _myHomePageState, bool isEdit, User user) {
-    if (user != null) {
-      this.user=user;
-      teFirstName.text = user.firstName;
-      teLastFirstName.text = user.lastName;
-      teDOB.text = user.dob;
+      BuildContext context, _myHomePageState, Contact contact) {
+    if (contact != null) {
+      this.contact=contact;
+      teAdresse.text = contact.adresse;
+      teDate.text = contact.date;
+      teEtat.text = contact.etat;
     }
 
     return new AlertDialog(
-      title: new Text(isEdit ? 'Edit' : 'Add new User'),
+      title: new Text('Modification de '+this.contact.adresse),
       content: new SingleChildScrollView(
         child: new Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            getTextField("Enter first name", teFirstName),
-            getTextField("Enter last name", teLastFirstName),
-            getTextField("DD-MM-YYYY", teDOB),
+            getTextField("Enter first name", teAdresse),
+            getTextField("DD-MM-YYYY",teDate),
+            getTextField("Enter last name",teEtat),
             new GestureDetector(
               onTap: () {
-                addRecord(isEdit);
+                editContact();
                 _myHomePageState.displayRecord();
                 Navigator.of(context).pop();
               },
               child: new Container(
                 margin: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
                 child: getAppBorderButton(
-                    isEdit?"Edit":"Add", EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0)),
+                    "Edit", EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0)),
               ),
             ),
           ],
@@ -89,14 +92,28 @@ class AddUserDialog {
     return loginBtn;
   }
 
-  Future addRecord(bool isEdit) async {
+  Future editContact() async {
     var db = new DatabaseHelper();
-    var user = new User(teFirstName.text, teLastFirstName.text, teDOB.text);
-    if (isEdit) {
-      user.setUserId(this.user.id);
-      await db.update(user);
-    } else {
-      await db.saveUser(user);
+    bool resul= false;
+    var contact = new Contact(teAdresse.text, teDate.text, teEtat.text);
+    contact.setContactId(this.contact.id);
+    resul =  await db.updateContact(contact);
+    if(resul){
+      String textt = teAdresse.text;
+      toaster("Modification de $textt effectuée ");
     }
+    return resul;
+
+  }
+  static toaster(String text){
+    Fluttertoast.showToast(
+        msg: text,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
   }
 }

@@ -6,7 +6,6 @@ class Contact {
   String _etat;
 
   Contact(this._adresse, this._date, this._etat);
-
   Contact.map(dynamic obj) {
     this._adresse = obj["adresse"];
     this._date = obj["date"];

@@ -25,6 +25,10 @@ dependencies:
   cupertino_icons: ^0.1.2
   sqflite: any
   path_provider: any
+  fluttertoast: ^3.0.3
+  material_search: ^0.2.8
+  contacts_service:
+  permission_handler: ^2.2.0
 
 
 dev_dependencies:
